@@ -1,4 +1,4 @@
-package com.publicis.credit_card;
+package com.publicis.creditcard;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

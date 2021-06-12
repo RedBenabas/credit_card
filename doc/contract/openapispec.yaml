@@ -1,0 +1,77 @@
+openapi: 3.0.2
+info:
+  title: Credit Card Management Service
+  description: APIs for creating and retrieving credit card details
+  version: 1.0.0
+
+
+
+
+paths:
+  /credit_cards:
+    summary: A Bank Credit Card
+    description: Credit card linked with a user account and bank balance
+    post:
+      summary: Create a Credit Card
+      description: Create a new credit card for a user with a zero balance.
+      operationId: credit_cards.create
+      responses:
+        '201':
+          description: Credit card created.
+          content:
+            application/json:
+              examples:
+                CreditCardCreated:
+                  value: |-
+                    {
+                      "name": "Alice",
+                      "number": "1111 2222 3333 4444",
+                      "balance": -1045.00,
+                      "limit": 2000.00
+                    }
+        '401':
+          description: Authentication failure.
+        '404':
+          description: Authorisation failure.
+        '409':
+          description: Credit card already exists.
+        '422':
+          description: |-
+            One of the following problems occurred:
+              - invalid card number,
+              - card number must be numeric, or
+              - card number exceeds maximum 19 digits.
+      tags:
+        - credit_cards
+    get:
+      summary: List All Credit Cards in the System
+      description: Retrieves a list of all credit cards in the system.
+      operationId: credit_cards.index
+      responses:
+        '200':
+          description: All credit cards in the system retrieved successfully.
+          content:
+            application/json:
+              examples:
+                CreditCardList:
+                  value: |-
+                    [
+                      {
+                        "name": "Alice",
+                        "number": "1111 2222 3333 4444",
+                        "balance": -1045,
+                        "limit": 2000
+                      },
+                      {
+                        "name": "Bob",
+                        "number": "4444 3333 2222 1111",
+                        "balance": 10.24,
+                        "limit": 5000
+                      }
+                    ]
+        '401':
+          description: Authentication failure.
+        '404':
+          description: Authorisation failure.
+      tags:
+        - credit_cards

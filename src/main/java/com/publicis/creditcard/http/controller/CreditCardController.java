@@ -1,11 +1,13 @@
 package com.publicis.creditcard.http.controller;
 
-import com.publicis.creditcard.model.dto.CreditCardDto;
+import com.publicis.creditcard.model.CreditCard;
 import com.publicis.creditcard.service.ICreditCardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.Collection;
 
 import static com.publicis.creditcard.Utils.Constants.CREDIT_CARDS_ROUTE;
 
@@ -22,7 +24,12 @@ public class CreditCardController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreditCardDto createProject(@RequestBody @Valid CreditCardDto creditCardDto) {
+    public CreditCard createProject(@RequestBody @Valid CreditCard creditCardDto) {
         return creditCardService.create(creditCardDto);
+    }
+
+    @GetMapping()
+    public Collection<CreditCard> listCreditCards() {
+        return creditCardService.listCreditCards();
     }
 }

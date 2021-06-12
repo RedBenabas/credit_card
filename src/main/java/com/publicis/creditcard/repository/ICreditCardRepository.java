@@ -1,8 +1,8 @@
 package com.publicis.creditcard.repository;
 
-import com.publicis.creditcard.model.dto.CreditCardDto;
-import org.springframework.data.repository.CrudRepository;
+import com.publicis.creditcard.model.CreditCard;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface ICreditCardRepository extends CrudRepository<CreditCardDto, Long> {
+public interface ICreditCardRepository extends PagingAndSortingRepository<CreditCard, Long> {
 
 }

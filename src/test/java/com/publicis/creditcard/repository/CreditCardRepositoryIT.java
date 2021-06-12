@@ -1,13 +1,19 @@
 package com.publicis.creditcard.repository;
 
-import com.publicis.creditcard.model.dto.CreditCardDto;
+import com.publicis.creditcard.model.CreditCard;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,18 +25,47 @@ class CreditCardRepositoryIT {
     @Autowired
     ICreditCardRepository creditCardRepository;
 
-    private CreditCardDto creditCardDto = new  CreditCardDto("Alice", "1111 2222 3333 4444", BigDecimal.valueOf(557), BigDecimal.valueOf(1000));
-
     @Test
     public void testSuccessfulCreditCardSaveOperation() {
-        CreditCardDto actualEntity = creditCardRepository.save(creditCardDto);
-        assertTrue("Project save failed.", Matchers.notNullValue().matches(actualEntity));
+        CreditCard actualEntity = creditCardRepository.save(new CreditCard("Alice", "1111 2222 3333 4444", BigDecimal.valueOf(557), BigDecimal.valueOf(1000)));
+        assertTrue("Project save successfully.", Matchers.notNullValue().matches(actualEntity));
+        creditCardRepository.deleteAll();
+    }
+
+    @Test()
+    public void testUniqueConstraintViolationOnColumnNumber() {
+        assertThrows(Exception.class, () -> {
+            creditCardRepository.save(new CreditCard("Alice", "1111 2222 3333 4444", BigDecimal.valueOf(557), BigDecimal.valueOf(1000)));
+            creditCardRepository.save(new CreditCard("Alice", "1111 2222 3333 4444", BigDecimal.valueOf(557), BigDecimal.valueOf(1000)));
+        });
     }
 
     @Test
-    public void testUniqueConstraintViolationOnColumnNumber() {
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            creditCardRepository.save(creditCardDto);
-        });
+    public void testFindPage() {
+        //given
+        CreditCard card1 = new CreditCard("Alec", "5555 2222 3333 4448", BigDecimal.valueOf(55700, 2), BigDecimal.valueOf(100000, 2));
+        CreditCard card2 = new CreditCard("Boris", "5555 7722 3333 4442", BigDecimal.valueOf(-1200, 2), BigDecimal.valueOf(40000,2));
+        CreditCard card3 = new CreditCard("Mahatma", "8866 2222 3333 44434", BigDecimal.valueOf(2000, 2), BigDecimal.valueOf(0, 2));
+        CreditCard card4 = new CreditCard("Ziggy", "8866 2211 3333 44437", BigDecimal.valueOf(-1034, 2), BigDecimal.valueOf(777700, 2));
+
+        Collection<CreditCard> cards = Arrays.asList(card4, card3, card2, card1);
+        cards.stream().map(card -> creditCardRepository.save(card)).collect(Collectors.toList());
+        // when
+        Iterable<CreditCard> all = creditCardRepository.findAll(Sort.by("name"));
+        //then
+        List<CreditCard> actual = StreamSupport.stream(all.spliterator(), false).collect(Collectors.toList());
+        List<CreditCard> expected = Arrays.asList(card1, card2, card3, card4);
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testFindPageWhenThereZeroElements() {
+        //given
+        creditCardRepository.deleteAll();
+        // when
+        Iterable<CreditCard> all = creditCardRepository.findAll(Sort.by("name"));
+        //then
+        List<CreditCard> actual = StreamSupport.stream(all.spliterator(), false).collect(Collectors.toList());
+        Assert.assertEquals(actual.size(), 0);
     }
 }

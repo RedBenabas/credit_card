@@ -1,8 +1,11 @@
 package com.publicis.creditcard.service;
 
-import com.publicis.creditcard.model.dto.CreditCardDto;
+import com.publicis.creditcard.model.CreditCard;
+
+import java.util.Collection;
 
 public interface ICreditCardService {
 
-    CreditCardDto create(CreditCardDto creditCardDto);
+    CreditCard create(CreditCard creditCardDto);
+    Collection<CreditCard> listCreditCards();
 }

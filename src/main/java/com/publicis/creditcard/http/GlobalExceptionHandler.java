@@ -1,5 +1,6 @@
 package com.publicis.creditcard.http;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -26,5 +27,11 @@ public class GlobalExceptionHandler {
         });
         ResponseEntity response = new ResponseEntity<>(errors, UNPROCESSABLE_ENTITY);
         return response;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+
+        return new ResponseEntity<>("A credit card with the same number already exits in the system.", HttpStatus.CONFLICT);
     }
 }

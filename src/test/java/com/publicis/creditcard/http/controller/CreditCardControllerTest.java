@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,20 +47,19 @@ class CreditCardControllerTest {
 
     @Test
     public void testResponseIsCreatedWhenServiceCreateIsSuccess() throws Exception {
-
-        doNothing().when(creditCardService).create(Mockito.any());
-        CreditCardDto obj = new CreditCardDto("alice", "1111 2222 3333 4451", BigDecimal.valueOf(1000L), BigDecimal.valueOf(5000L));
+        CreditCardDto obj = new CreditCardDto("alice", "1111 2222 3333 4451", BigDecimal.valueOf(5000L));
+        doReturn(obj).when(creditCardService).create(Mockito.any());
         mockMvc.perform(post("/credit_cards")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonAsString(obj))
-        ).andExpect(status().isCreated());
+        ).andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().json(writer.writeValueAsString(obj)));
+
     }
 
     @Test
     public void testResponseIsUnprocessableEntityWhenCardNumberExceedMaximumNumberOfDigits() throws Exception {
-
-        doNothing().when(creditCardService).create(Mockito.any());
-        CreditCardDto obj = new CreditCardDto("alice", "1111 2222 333 4444 5555 6666", BigDecimal.valueOf(1000L), BigDecimal.valueOf(5000L));
+        CreditCardDto obj = new CreditCardDto("alice", "1111 2222 333 4444 5555 6666", BigDecimal.valueOf(5000L));
         mockMvc.perform(post("/credit_cards")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonAsString(obj))
@@ -70,9 +69,7 @@ class CreditCardControllerTest {
 
     @Test
     public void testResponseIsUnprocessableEntityWhenCardNumberIsNotNumericOnly() throws Exception {
-
-        doNothing().when(creditCardService).create(Mockito.any());
-        CreditCardDto obj = new CreditCardDto("alice", "1111 -a*$ 333 4444", BigDecimal.valueOf(1000L), BigDecimal.valueOf(5000L));
+        CreditCardDto obj = new CreditCardDto("alice", "1111 -a*$ 333 4444", BigDecimal.valueOf(5000L));
         mockMvc.perform(post("/credit_cards")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonAsString(obj))
@@ -82,9 +79,7 @@ class CreditCardControllerTest {
 
     @Test
     public void testResponseIsUnprocessableEntityWhenCardNumberIsNotLunhSequence() throws Exception {
-
-        doNothing().when(creditCardService).create(Mockito.any());
-        CreditCardDto obj = new CreditCardDto("alice", "1111 2222 3333 4457", BigDecimal.valueOf(1000L), BigDecimal.valueOf(5000L));
+        CreditCardDto obj = new CreditCardDto("alice", "1111 2222 3333 4457", BigDecimal.valueOf(5000L));
         mockMvc.perform(post("/credit_cards")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonAsString(obj))

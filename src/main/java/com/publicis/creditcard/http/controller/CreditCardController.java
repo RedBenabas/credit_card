@@ -22,7 +22,7 @@ public class CreditCardController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProject(@RequestBody @Valid CreditCardDto creditCardDto) {
-        creditCardService.create(creditCardDto);
+    public CreditCardDto createProject(@RequestBody @Valid CreditCardDto creditCardDto) {
+        return creditCardService.create(creditCardDto);
     }
 }

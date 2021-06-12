@@ -4,7 +4,5 @@ import com.publicis.creditcard.model.dto.CreditCardDto;
 
 public interface ICreditCardService {
 
-    void create(CreditCardDto creditCardDto);
-
-    CreditCardDto findById(Long id);
+    CreditCardDto create(CreditCardDto creditCardDto);
 }

@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -54,6 +55,7 @@ class CreditCardControllerTest {
     private ICreditCardService creditCardService;
 
     @Test
+    @WithMockUser(value = "red")
     public void testResponseIsCreatedWhenServiceCreateIsSuccess() throws Exception {
         CreditCard obj = new CreditCard("alice", "1111 2222 3333 4451", BigDecimal.valueOf(5000L));
         doReturn(obj).when(creditCardService).create(Mockito.any());

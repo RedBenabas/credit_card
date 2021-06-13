@@ -1,4 +1,4 @@
-package com.publicis.creditcard.Utils;
+package com.publicis.creditcard.utils;
 
 import java.math.BigDecimal;
 

@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static com.publicis.creditcard.Utils.Constants.BALANCE_DEFAULT_VALUE;
+import static com.publicis.creditcard.utils.Constants.BALANCE_DEFAULT_VALUE;
 
 @Entity
 public class CreditCard {

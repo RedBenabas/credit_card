@@ -9,7 +9,7 @@ import javax.validation.Valid;
 
 import java.util.Collection;
 
-import static com.publicis.creditcard.Utils.Constants.CREDIT_CARDS_ROUTE;
+import static com.publicis.creditcard.utils.Constants.CREDIT_CARDS_ROUTE;
 
 @RestController
 @RequestMapping(value = CREDIT_CARDS_ROUTE)

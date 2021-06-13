@@ -17,7 +17,9 @@
 - Application is started on http://localhost:8080
 
 # Future enhancements:
+- Retrofit authentication/authorization using Spring Security module with http BasicAuth. 
+    - This branch shows an attempt at a work-in-progress, which I'm still debugging https://github.com/RedBenabas/credit_card/tree/retrofict_security_using_spring_security_with_http_basic_auth
+
 - Parameterised support for Pagination and Sorting
 - Refactor schema so that in the event a credit card getting lost, a new card with a different number can be reissued to the same user with the same balance carried over.
-- Incorporate authentication/authorization as an external dependency
 - Implement the front-end using React/Redux

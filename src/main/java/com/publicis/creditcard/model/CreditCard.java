@@ -10,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import static com.publicis.creditcard.Utils.Constants.BALANCE_DEFAULT_VALUE;
+
 @Entity
 public class CreditCard {
 
@@ -24,7 +26,7 @@ public class CreditCard {
     @Column(unique = true)
     private String number;
 
-    private BigDecimal balance;
+    private BigDecimal balance = BALANCE_DEFAULT_VALUE;
 
     private BigDecimal cardLimit;
 

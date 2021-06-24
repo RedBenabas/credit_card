@@ -2,7 +2,7 @@ package com.publicis.creditcard.service;
 
 import com.publicis.creditcard.model.CreditCard;
 import com.publicis.creditcard.repository.ICreditCardRepository;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,6 @@ class CreditCardServiceTest {
         Mockito.doReturn(result).when(creditCardRepository).findAll(Sort.by("name"));
 
         Collection<CreditCard> listCreditCards = instanceUnderTest.listCreditCards();
-        Assert.assertEquals(result, listCreditCards);
+        Assertions.assertEquals(result, listCreditCards);
     }
 }

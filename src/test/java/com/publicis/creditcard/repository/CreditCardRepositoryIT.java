@@ -2,7 +2,7 @@ package com.publicis.creditcard.repository;
 
 import com.publicis.creditcard.model.CreditCard;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -28,7 +27,7 @@ class CreditCardRepositoryIT {
     @Test
     public void testSuccessfulCreditCardSaveOperation() {
         CreditCard actualEntity = creditCardRepository.save(new CreditCard("Alice", "1111 2222 3333 4444", BigDecimal.valueOf(557), BigDecimal.valueOf(1000)));
-        assertTrue("Project save successfully.", Matchers.notNullValue().matches(actualEntity));
+        Assertions.assertTrue(Matchers.notNullValue().matches(actualEntity), "Project save successfully.");
         creditCardRepository.deleteAll();
     }
 
@@ -55,7 +54,7 @@ class CreditCardRepositoryIT {
         //then
         List<CreditCard> actual = StreamSupport.stream(all.spliterator(), false).collect(Collectors.toList());
         List<CreditCard> expected = Arrays.asList(card1, card2, card3, card4);
-        Assert.assertEquals(actual, expected);
+        Assertions.assertEquals(actual, expected);
     }
 
     @Test
@@ -66,6 +65,6 @@ class CreditCardRepositoryIT {
         Iterable<CreditCard> all = creditCardRepository.findAll(Sort.by("name"));
         //then
         List<CreditCard> actual = StreamSupport.stream(all.spliterator(), false).collect(Collectors.toList());
-        Assert.assertEquals(actual.size(), 0);
+        Assertions.assertEquals(actual.size(), 0);
     }
 }

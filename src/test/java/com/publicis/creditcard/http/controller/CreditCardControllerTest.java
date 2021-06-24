@@ -27,7 +27,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,7 +56,7 @@ class CreditCardControllerTest {
     private ICreditCardService creditCardService;
 
     @Test
-    @WithMockUser(value = "red")
+    @WithMockUser(username = "writer", roles = "EDIT")
     public void testResponseIsCreatedWhenServiceCreateIsSuccess() throws Exception {
         CreditCard obj = new CreditCard("alice", "1111 2222 3333 4451", BigDecimal.valueOf(5000L));
         doReturn(obj).when(creditCardService).create(Mockito.any());
@@ -68,6 +69,7 @@ class CreditCardControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "writer", roles = "EDIT")
     public void testResponseIsConflictWhenServiceThrowsDataAccessException() throws Exception {
         doThrow(DataIntegrityViolationException.class).when(creditCardService).create(Mockito.any());
         CreditCard obj = new CreditCard("alice", "1111 2222 3333 4451", BigDecimal.valueOf(1000L), BigDecimal.valueOf(5000L));
@@ -80,6 +82,7 @@ class CreditCardControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "writer", roles = "EDIT")
     public void testResponseIsUnprocessableEntityWhenCardNumberExceedMaximumNumberOfDigits() throws Exception {
         CreditCard obj = new CreditCard("alice", "1111 2222 333 4444 5555 6666", BigDecimal.valueOf(5000L));
         mockMvc.perform(post("/credit_cards")
@@ -90,6 +93,7 @@ class CreditCardControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "writer", roles = "EDIT")
     public void testResponseIsUnprocessableEntityWhenCardNumberIsNotNumericOnly() throws Exception {
         CreditCard obj = new CreditCard("alice", "1111 -a*$ 333 4444", BigDecimal.valueOf(5000L));
         mockMvc.perform(post("/credit_cards")
@@ -100,6 +104,7 @@ class CreditCardControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "writer", roles = "EDIT")
     public void testResponseIsUnprocessableEntityWhenCardNumberIsNotLunhSequence() throws Exception {
         CreditCard obj = new CreditCard("alice", "1111 2222 3333 4457", BigDecimal.valueOf(5000L));
         mockMvc.perform(post("/credit_cards")
@@ -110,6 +115,33 @@ class CreditCardControllerTest {
     }
 
     @Test
+    public void testPOSTResponseIsUnauthorizedWhenCredentialsAreNotRecognised() throws Exception {
+        CreditCard obj = new CreditCard("alice", "1111 2222 3333 4457", BigDecimal.valueOf(5000L));
+        mockMvc.perform(post("/credit_cards")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJsonAsString(obj))
+        ).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "writer", roles = "VIEW")
+    public void testResponseIsForbiddenWhenUserDoesNotHaveEditPrivilege() throws Exception {
+        CreditCard obj = new CreditCard("alice", "1111 2222 3333 4457", BigDecimal.valueOf(5000L));
+        mockMvc.perform(post("/credit_cards")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJsonAsString(obj))
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testGETResponseIsUnauthorizedWhenCredentialsAreNotKnown() throws Exception {
+        mockMvc.perform(get("/credit_cards")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "reader", roles = "VIEW")
     public void testResponseIsOkWhenServiceRetrievesCreditCardsSuccessfully() throws Exception {
         CreditCard cardAlice = new CreditCard("Alice", "1111 2222 3333 4457", BigDecimal.valueOf(1000L), BigDecimal.valueOf(5000L));
         CreditCard cardBob = new CreditCard("Bob", "555 6666 7777 8888", BigDecimal.valueOf(-54), BigDecimal.valueOf(1000L));

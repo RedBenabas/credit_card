@@ -22,13 +22,13 @@ public class CreditCardController {
     }
 
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public CreditCard createProject(@RequestBody @Valid CreditCard creditCardDto) {
         return creditCardService.create(creditCardDto);
     }
 
-    @GetMapping()
+    @GetMapping(consumes = "application/json", produces = "application/json")
     public Collection<CreditCard> listCreditCards() {
         return creditCardService.listCreditCards();
     }
